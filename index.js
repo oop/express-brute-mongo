@@ -17,12 +17,14 @@ MongoStore.prototype.set = function (key, value, lifetime, callback) {
   var _id = this.options.prefix+key;
   var expiration = lifetime ? moment().add(lifetime, 'seconds').toDate() : undefined;
 
-  this._collection.update({
+  this._collection.updateOne({
     _id: _id
   }, {
-    _id: _id,
-    data: value,
-    expires: expiration
+    $set: {
+        _id: _id,
+        data: value,
+        expires: expiration
+    }
   }, {
     upsert: true
   }, function () {
